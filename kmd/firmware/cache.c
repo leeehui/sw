@@ -77,6 +77,7 @@ dla_get_op_desc(struct dla_task *task, int16_t index,
 		goto exit;
 	}
 
+    /* roi_index is always 0 when called from initiate_processors */
 	dep_graph_addr = (sizeof(struct dla_common_op_desc) *
 				engine->network->num_operations * roi_index);
 

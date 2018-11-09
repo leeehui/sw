@@ -37,6 +37,7 @@
 void
 dla_debug_network_desc(struct dla_network_desc *nd)
 {
+    int32_t i;
 	dla_debug("*********************************************************\n");
 	dla_debug("NVDLA FW dla_network_desc\n");
 	dla_debug("---------------------------------------------------------\n");
@@ -53,6 +54,9 @@ dla_debug_network_desc(struct dla_network_desc *nd)
 	dla_debug("num addr           = %u\n", nd->num_addresses);
 	dla_debug("input layer        = %u\n", nd->input_layer);
 	dla_debug("dynamic roi        = %u\n", nd->dynamic_roi);
+    for (i=0; i<DLA_OP_NUM; i++) {
+        dla_debug("op_head[%d]        = %d\n", nd->op_head[i]);
+    }
 }
 
 static void
@@ -137,9 +141,9 @@ dla_debug_data_cube(struct dla_data_cube *cube)
 {
 	dla_debug("    type          = %u\n", cube->type);
 	dla_debug("    address       = %d\n", cube->address);
-	dla_debug("    width         = %x\n", cube->width);
-	dla_debug("    height        = %x\n", cube->height);
-	dla_debug("    channel       = %x\n", cube->channel);
+	dla_debug("    width         = %d\n", cube->width);
+	dla_debug("    height        = %d\n", cube->height);
+	dla_debug("    channel       = %d\n", cube->channel);
 	dla_debug("    size          = %u\n", cube->size);
 	dla_debug("    line_stride   = %u\n", cube->line_stride);
 	dla_debug("    surf_stride   = %u\n", cube->surf_stride);

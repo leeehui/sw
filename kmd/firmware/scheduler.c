@@ -738,6 +738,9 @@ dla_read_network_config(struct dla_engine *engine)
 
 	dla_debug("Enter:%s\n", __func__);
 
+    //dla_print_address_list(engine->driver_context, task->task_data);
+
+    //dla_print_all_mem_handle(engine->driver_context, task->task_data);
 	/**
 	 * Read address list from DRAM to DMEM
 	 */
@@ -1158,4 +1161,5 @@ dla_clear_task(void *engine_context)
 	engine->stat_enable = 0;
 
 	dla_info("reset engine done\n");
+	dla_trace("reset engine done\n");
 }

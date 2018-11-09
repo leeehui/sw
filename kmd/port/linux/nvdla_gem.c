@@ -37,6 +37,7 @@
 
 #include <nvdla_linux.h>
 #include <nvdla_ioctl.h>
+#include <nvdla_interface.h>
 
 #define to_nvdla_obj(x) container_of(x, struct nvdla_gem_object, object)
 
@@ -110,6 +111,7 @@ static int32_t nvdla_submit(struct drm_device *drm, void *arg,
 	err = nvdla_fill_task_desc(&local_task, task);
 	if (err)
 		goto free_task_desc;
+
 
 	err = nvdla_task_submit(nvdla_dev, task);
 
@@ -329,7 +331,35 @@ int32_t nvdla_gem_dma_addr(struct drm_device *dev, struct drm_file *file,
 
 	*addr = nobj->dma_addr;
 
-	drm_gem_object_put_unlocked(dobj);
+	//drm_gem_object_put_unlocked(dobj);
+	drm_gem_object_unreference_unlocked(dobj);
+
+	return 0;
+}
+
+int32_t nvdla_gem_dma_addr_and_size(struct drm_device *dev, struct drm_file *file,
+			uint32_t fd, dma_addr_t *addr, uint32_t *size)
+{
+	int32_t ret;
+	uint32_t handle;
+	struct nvdla_gem_object *nobj;
+	struct drm_gem_object *dobj;
+
+	ret = drm_gem_prime_fd_to_handle(dev, file, fd, &handle);
+	if (ret)
+		return ret;
+
+	dobj = drm_gem_object_lookup(file, handle);
+	if (!dobj)
+		return -EINVAL;
+
+	nobj = to_nvdla_obj(dobj);
+
+	*addr = nobj->dma_addr;
+    *size = dobj->size;
+
+	//drm_gem_object_put_unlocked(dobj);
+	drm_gem_object_unreference_unlocked(dobj);
 
 	return 0;
 }
@@ -436,7 +466,7 @@ int32_t nvdla_drm_probe(struct nvdla_device *nvdla_dev)
 	 * TODO Register separate driver for memory and use DT node to
 	 * read memory range
 	 */
-	dma = dma_declare_coherent_memory(drm->dev, 0xC0000000, 0xC0000000,
+	dma = dma_declare_coherent_memory(drm->dev, 0x35000000, 0x35000000,
 			0x40000000, DMA_MEMORY_MAP | DMA_MEMORY_EXCLUSIVE);
 	if (!(dma & DMA_MEMORY_MAP)) {
 		err = -ENOMEM;

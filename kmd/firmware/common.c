@@ -105,6 +105,7 @@ void update_lut(uint32_t reg_base, struct dla_lut_param *lut,
 	reg_write(reg_base, reg);
 
 	for (i = 0; i < (1<<LUT_LINEAR_EXP_TABLE_ENTRY_LOG2)+1; i++) {
+        dla_debug("FUNCTION_UPDATE_LUT \n");
 		dla_reg_write(engine->driver_context,
 				reg_base + access_data_offset[is_sdp],
 				lut->linear_exp_table[i]);
@@ -115,9 +116,11 @@ void update_lut(uint32_t reg_base, struct dla_lut_param *lut,
 		<< SHIFT(CDP_S_LUT_ACCESS_CFG_0, LUT_TABLE_ID)) |
 		(FIELD_ENUM(CDP_S_LUT_ACCESS_CFG_0, LUT_ACCESS_TYPE, WRITE)
 		<< SHIFT(CDP_S_LUT_ACCESS_CFG_0, LUT_ACCESS_TYPE));
+    dla_debug("FUNCTION_UPDATE_LUT \n");
 	dla_reg_write(engine->driver_context, reg_base, reg);
 
 	for (i = 0; i < (1<<LUT_LINEAR_ONLY_TABLE_ENTRY_LOG2)+1; i++) {
+        dla_debug("FUNCTION_UPDATE_LUT \n");
 		dla_reg_write(engine->driver_context,
 				reg_base + access_data_offset[is_sdp],
 				lut->linear_only_table[i]);
@@ -132,6 +135,7 @@ void update_lut(uint32_t reg_base, struct dla_lut_param *lut,
 		SHIFT(CDP_S_LUT_CFG_0, LUT_UFLOW_PRIORITY)) |
 		(map_lut_out[lut->overflow_priority] <<
 		SHIFT(CDP_S_LUT_CFG_0, LUT_OFLOW_PRIORITY));
+    dla_debug("FUNCTION_UPDATE_LUT \n");
 	dla_reg_write(engine->driver_context,
 			reg_base + lut_cfg_offset[is_sdp], reg);
 
@@ -151,39 +155,53 @@ void update_lut(uint32_t reg_base, struct dla_lut_param *lut,
 			SHIFT(CDP_S_LUT_INFO_0, LUT_LO_INDEX_SELECT))&
 		MASK(CDP_S_LUT_INFO_0, LUT_LO_INDEX_SELECT));
 	}
+    dla_debug("FUNCTION_UPDATE_LUT \n");
 	dla_reg_write(engine->driver_context,
 			reg_base + lut_info_offset[is_sdp], reg);
 	high = HIGH32BITS(lut->linear_exp_start);
 	low = LOW32BITS(lut->linear_exp_start);
+    dla_debug("FUNCTION_UPDATE_LUT \n");
 	dla_reg_write(engine->driver_context,
 			reg_base + le_start_offset[is_sdp], low);
-	if (!is_sdp)
+	if (!is_sdp) {
+        dla_debug("FUNCTION_UPDATE_LUT \n");
 		dla_reg_write(engine->driver_context,
 				reg_base + le_start_offset[is_sdp] + 4, high);
+    }
 
 	high = HIGH32BITS(lut->linear_exp_end);
 	low = LOW32BITS(lut->linear_exp_end);
+    dla_debug("FUNCTION_UPDATE_LUT \n");
 	dla_reg_write(engine->driver_context,
 				reg_base + le_end_offset[is_sdp], low);
-	if (!is_sdp)
+	if (!is_sdp) {
+        dla_debug("FUNCTION_UPDATE_LUT \n");
 		dla_reg_write(engine->driver_context,
 				reg_base + le_end_offset[is_sdp] + 4, high);
+    }
 
 	high = HIGH32BITS(lut->linear_only_start);
 	low = LOW32BITS(lut->linear_only_start);
+    dla_debug("FUNCTION_UPDATE_LUT \n");
 	dla_reg_write(engine->driver_context,
 				reg_base + lo_start_offset[is_sdp], low);
-	if (!is_sdp)
+	if (!is_sdp) {
+        dla_debug("FUNCTION_UPDATE_LUT \n");
 		dla_reg_write(engine->driver_context,
 				reg_base + lo_start_offset[is_sdp] + 4, high);
+    }
 
 	high = HIGH32BITS(lut->linear_only_end);
 	low = LOW32BITS(lut->linear_only_end);
+    dla_debug("FUNCTION_UPDATE_LUT \n");
 	dla_reg_write(engine->driver_context,
 				reg_base + lo_end_offset[is_sdp], low);
-	if (!is_sdp)
+	if (!is_sdp) {
+
+        dla_debug("FUNCTION_UPDATE_LUT \n");
 		dla_reg_write(engine->driver_context,
 				reg_base + lo_end_offset[is_sdp] + 4, high);
+    }
 
 	if (precision == PRECISION_FP16) {
 		reg = (lut->linear_exp_underflow_slope.data_f <<
@@ -192,6 +210,7 @@ void update_lut(uint32_t reg_base, struct dla_lut_param *lut,
 			(lut->linear_exp_overflow_slope.data_f <<
 			SHIFT(CDP_S_LUT_LE_SLOPE_SCALE_0,
 					LUT_LE_SLOPE_OFLOW_SCALE));
+        dla_debug("FUNCTION_UPDATE_LUT \n");
 		dla_reg_write(engine->driver_context,
 				reg_base + le_slope_scale_offset[is_sdp], reg);
 
@@ -201,6 +220,7 @@ void update_lut(uint32_t reg_base, struct dla_lut_param *lut,
 			(lut->linear_only_overflow_slope.data_f <<
 			SHIFT(CDP_S_LUT_LO_SLOPE_SCALE_0,
 					LUT_LO_SLOPE_OFLOW_SCALE));
+        dla_debug("FUNCTION_UPDATE_LUT \n");
 		dla_reg_write(engine->driver_context,
 				reg_base + lo_slope_scale_offset[is_sdp], reg);
 	} else {
@@ -219,6 +239,7 @@ void update_lut(uint32_t reg_base, struct dla_lut_param *lut,
 					LUT_LE_SLOPE_OFLOW_SCALE))&
 			MASK(CDP_S_LUT_LE_SLOPE_SCALE_0,
 					LUT_LE_SLOPE_OFLOW_SCALE));
+        dla_debug("FUNCTION_UPDATE_LUT \n");
 		dla_reg_write(engine->driver_context,
 				reg_base + le_slope_scale_offset[is_sdp], reg);
 
@@ -232,6 +253,7 @@ void update_lut(uint32_t reg_base, struct dla_lut_param *lut,
 					LUT_LE_SLOPE_OFLOW_SHIFT))&
 			MASK(CDP_S_LUT_LE_SLOPE_SHIFT_0,
 					LUT_LE_SLOPE_OFLOW_SHIFT));
+        dla_debug("FUNCTION_UPDATE_LUT \n");
 		dla_reg_write(engine->driver_context,
 				reg_base + le_slope_shift_offset[is_sdp], reg);
 
@@ -247,6 +269,7 @@ void update_lut(uint32_t reg_base, struct dla_lut_param *lut,
 					LUT_LO_SLOPE_OFLOW_SCALE))&
 			MASK(CDP_S_LUT_LO_SLOPE_SCALE_0,
 					LUT_LO_SLOPE_OFLOW_SCALE));
+        dla_debug("FUNCTION_UPDATE_LUT \n");
 		dla_reg_write(engine->driver_context,
 				reg_base + lo_slope_scale_offset[is_sdp], reg);
 		reg = ((((uint32_t)uslope->data_i.shifter) <<
@@ -259,6 +282,7 @@ void update_lut(uint32_t reg_base, struct dla_lut_param *lut,
 					LUT_LO_SLOPE_OFLOW_SHIFT))&
 			MASK(CDP_S_LUT_LO_SLOPE_SHIFT_0,
 					LUT_LO_SLOPE_OFLOW_SHIFT));
+        dla_debug("FUNCTION_UPDATE_LUT \n");
 		dla_reg_write(engine->driver_context,
 				reg_base + lo_slope_shift_offset[is_sdp], reg);
 	}

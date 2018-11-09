@@ -129,6 +129,8 @@ int32_t nvdla_task_submit(struct nvdla_device *nvdla_dev, struct nvdla_task *tas
 int32_t nvdla_gem_dma_addr(struct drm_device *dev, struct drm_file *file,
 					uint32_t fd, dma_addr_t *addr);
 
+int32_t nvdla_gem_dma_addr_and_size(struct drm_device *dev, struct drm_file *file,
+			uint32_t fd, dma_addr_t *addr, uint32_t *size);
 /**
  * @brief			DRM probe
  *

@@ -56,6 +56,10 @@ struct nvdla_mem_handle {
 	__u64 offset;
 };
 
+struct  nvdla_mem_handle_with_index {
+    struct nvdla_mem_handle blob;
+	__u32 original_index;
+};
 /**
  * struct nvdla_ioctl_submit_task structure for single task information
  *

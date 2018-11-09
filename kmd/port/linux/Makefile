@@ -35,6 +35,7 @@ obj-m += opendla.o
 ccflags-y += -I$(src)/include
 ccflags-y += -I$(src)/../../include
 ccflags-y += -Werror
+#ccflags-y += -DDLA_SMALL_CONFIG
 
 include $(src)/../../firmware/Makefile
 

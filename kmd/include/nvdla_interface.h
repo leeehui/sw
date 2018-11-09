@@ -230,7 +230,11 @@ int32_t dla_data_write(void *driver_context, void *task_data,
 int32_t dla_get_dma_address(void *driver_context, void *task_data,
 					int16_t index, void *dst_ptr,
 					uint32_t destination);
+void dla_print_address_list(void *driver_context, void *task_data);
+void dla_print_handle_by_index(void *driver_context, void *task_data, int32_t index);
+int32_t dla_print_dma_buf_handle(int32_t index, uint32_t handle, uint32_t size, uint64_t offset);
 
+void dla_print_all_mem_handle(void *driver_context, void *task_data);
 /**
  * @brief			Read time value in micro-seconds
  *
