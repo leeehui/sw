@@ -63,6 +63,7 @@ static int max_index;
 static int mem_dump;
 static int file_dump;
 static int dump_filter_on;
+static int dump_first;
 
 /* mem index excluded from dump */
 #define FILTER_NUM 3
@@ -97,6 +98,8 @@ module_param(file_dump, int, S_IRUSR);
 MODULE_PARM_DESC(file_dump, "dump mem to file or not");
 module_param(dump_filter_on, int, S_IRUSR);
 MODULE_PARM_DESC(dump_filter_on, "is dump_filter_on");
+module_param(dump_first, int, S_IRUSR);
+MODULE_PARM_DESC(dump_first, "dump mem at the beginning");
 
 static struct nvdla_config nvdla_config_os_initial = {
 	.atom_size = 32,
@@ -210,10 +213,17 @@ static void dump_to_file(int32_t index, void *data, uint32_t size)
     loff_t pos;
 
     uint8_t file_name[50];
+    uint8_t *buffer = (uint8_t *)vmalloc(size);
+    if (!buffer) {
+		printk("Failed to alloc kernel memory \n");
+		return;
+    }
+
+    memcpy(buffer, data, size);
 
     memset(file_name, 0, 50);
 
-    sprintf(file_name, "./mem-log/nvdla-mem-%d-raw.log", index);
+    sprintf(file_name, "./nvdla-mem-%d-raw.log", index);
 
     fp = filp_open(file_name, O_RDWR|O_CREAT, 0644);
     if (IS_ERR(fp)) {
@@ -225,7 +235,7 @@ static void dump_to_file(int32_t index, void *data, uint32_t size)
     set_fs(KERNEL_DS);
 
     pos = 0;
-    vfs_write(fp,  data, size, &pos);
+    vfs_write(fp,  buffer, size, &pos);
 
     vfs_fsync(fp, 0);
 
@@ -632,6 +642,14 @@ int32_t nvdla_task_submit(struct nvdla_device *nvdla_dev, struct nvdla_task *tas
         dla_debug("Enter: wait_for_completion\n"); 
 		wait_for_completion(&nvdla_dev->event_notifier);
         dla_debug("Exit: wait_for_completion\n"); 
+
+        if (dump_first) {
+            dla_print_all_mem_handle(nvdla_dev, task);
+            dla_debug("lihui: just dump mem and return.\n"); 
+            dump_first = 0;
+            break;
+        }
+
 
         if (dump_flag) {
             dump_flag = 0;//stop print next time
